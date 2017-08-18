@@ -1,0 +1,98 @@
+<html>
+<body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+<script src="springy.js"></script>
+<script src="springyui.js"></script>
+<script src="mincut.js"></script>
+<script>
+
+// Min-cut UI
+
+var ug = new UndirectedGraph();
+var nodes = [];
+var edges = [];
+
+$(document).ready(function() {
+	$('button#min_edge_cut').click(function() {
+	    highlight_edges(ug.min_cut(0, 1));
+	});
+	
+	$('button#min_vertex_cut').click(function() {
+	    highlight_vertices(ug.min_vertex_cut(0, 1));
+	});
+
+        $('button#reset').click(function() {
+            location.reload(true);
+        });                
+});
+
+function clear_highlighting() {
+    edges.forEach(function(edge) { edge.data.color = '#000000'; });
+    nodes.forEach(function(node) { node.data.border_color = '#000000'; });
+};
+
+function highlight_edges(edge_list) {
+    clear_highlighting();
+    edge_list.forEach(function(edge) {
+        graph.getEdges(nodes[edge[0]], nodes[edge[1]])[0].data.color = '#FF0000';
+    });
+};
+
+function highlight_vertices(node_list) {
+    clear_highlighting();
+    node_list.forEach(function(node) {
+        nodes[node].data.border_color = '#FF0000';
+    });
+};
+
+// Springy stuff:
+
+var graph = new Springy.Graph({
+    onaddnode: function(node) { ug.add_vertex('v' + node.id); nodes.push(node); clear_highlighting(); },
+    onremovenode: function(node) { ug.remove_vertex('v' + node.id); nodes.push(node); clear_highlighting(); },
+    onaddedge: function(edge) { ug.add_edge('v' + edge.source.id, 'v' + edge.target.id); edges.push(edge); clear_highlighting(); },
+    onremoveedge: function(edge) { ug.remove_edge('v' + edge.source.id, 'v' + edge.target.id); edges.push(edge); clear_highlighting(); },
+    directed: false
+});
+
+var s = graph.newNode({label: 's', color: '#B0D0FF'});
+var t = graph.newNode({label: 't', color: '#90B0FF'});
+var v2 = graph.newNode();
+var v3 = graph.newNode();
+var v4 = graph.newNode();
+var v5 = graph.newNode();
+var v6 = graph.newNode();
+var v7 = graph.newNode();
+
+graph.newEdge(s, v2, {});
+graph.newEdge(s, v6, {});
+graph.newEdge(v2, t, {});
+graph.newEdge(v2, v3, {});
+graph.newEdge(v2, v4, {});
+graph.newEdge(v2, v6, {});
+graph.newEdge(v2, v7, {});
+graph.newEdge(v3, t, {});
+graph.newEdge(v3, v6, {});
+graph.newEdge(v4, t, {});
+graph.newEdge(v4, s, {});
+graph.newEdge(v4, v7, {});
+graph.newEdge(v5, v6, {});
+graph.newEdge(v5, v7, {});
+graph.newEdge(v7, t, {});
+
+jQuery(function(){
+    var springy = window.springy = jQuery('#springydemo').springy({
+        graph: graph
+    });
+});
+
+</script>
+
+<div>
+<canvas id="springydemo" width="640" height="480" />
+</div>
+<div>
+<button id="reset">Reset</button><button id="min_edge_cut">Minimum edge cut</button><button id="min_vertex_cut">Minimum vertex cut</button>
+</div>
+</body>
+</html>
