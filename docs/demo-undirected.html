@@ -1,0 +1,42 @@
+<html>
+<body>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+<script src="springy.js"></script>
+<script src="springyui.js"></script>
+<script>
+
+var graph = new Springy.Graph({
+	onaddnode: function(node) { console.log('onaddnode: ' + node.id); },
+	onremovenode: function(node) { console.log('onremovenode: ' + node.id); },
+	onaddedge: function(edge) { console.log('onaddedge: ' + edge.source.id + ', ' + edge.target.id); },
+	onremoveedge: function(edge) { console.log('onremoveedge: ' + edge.source.id + ', ' + edge.target.id); },
+	directed: false,
+        simple: true
+});
+
+var a = graph.newNode();
+var b = graph.newNode();
+
+graph.newEdge(a, b, {});
+
+jQuery(function(){
+  var springy = window.springy = jQuery('#springydemo').springy({
+    graph: graph
+  });
+});
+
+</script>
+
+<div>
+<ul>
+<li>to add a node, double-click in an open space</li>
+<li>to delete a node, double-click on an existing node</li>
+<li>to add an edge, left-click drag from one node to another</li>
+<li>to delete an edge, right-click drag between adjacent nodes</li>
+</ul>
+</div>
+<div>
+<canvas id="springydemo" width="640" height="480" />
+</div>
+</body>
+</html>
